@@ -5,11 +5,7 @@ use App\EventDispatcher;
 use App\Exception\NoListenerException;
 use App\Interface\EventListenerInterface;
 
-spl_autoload_register(function (string $classname) {
-    $classname = str_replace('\\', '/', $classname);
-    $path = strtr($classname, ['App/' => __DIR__.'/src/']).'.php';
-    require_once $path;
-});
+require_once __DIR__.'/vendor/autoload.php';
 
 $dispatcher = new EventDispatcher();
 $dispatcher->addListener('event_foo', function($event) {
