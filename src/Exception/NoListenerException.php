@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Exception;
+
 class NoListenerException extends \InvalidArgumentException
 {
     public function __construct(

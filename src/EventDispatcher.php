@@ -1,5 +1,10 @@
 <?php
 
+namespace App;
+
+use App\Exception\NoListenerException;
+use App\Interface\EventListenerInterface;
+
 class EventDispatcher
 {
     private array $listeners = [];
