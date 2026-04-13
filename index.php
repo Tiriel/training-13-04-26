@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__.'/EventListenerInterface.php';
+require_once __DIR__.'/NoListenerException.php';
 require_once __DIR__.'/EventDispatcher.php';
 
 $dispatcher = new EventDispatcher();
@@ -14,4 +15,9 @@ $dispatcher->addListener('event_foo', new class implements EventListenerInterfac
     }
 });
 
-$dispatcher->dispatch(new stdClass(), 'event_foo');
+try {
+    $dispatcher->dispatch(new stdClass(), 'event_foo');
+} catch (NoListenerException $e) {
+    echo $e->getMessage().\PHP_EOL;
+    echo "Event name : ".$e->eventName.\PHP_EOL;
+}
