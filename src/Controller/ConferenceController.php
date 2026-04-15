@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Conference;
+use App\Form\ConferenceType;
 use App\Repository\ConferenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Requirement\Requirement;
 
 #[Route('/conference')]
 class ConferenceController extends AbstractController
@@ -34,28 +34,14 @@ class ConferenceController extends AbstractController
         ]);
     }
 
-    #[Route(
-        '/{name}/{start}/{end}',
-        name: 'app_conference_new',
-        requirements: [
-            'name' => Requirement::CATCH_ALL,
-            'start' => Requirement::DATE_YMD,
-            'end' => Requirement::DATE_YMD,
-        ]
-    )]
-    public function newConference(string $name, string $start, string $end, EntityManagerInterface $manager): Response
+    #[Route('/new', name: 'app_conference_new', methods: ['GET', 'POST'])]
+    public function newConference(EntityManagerInterface $manager): Response
     {
-        $conference = (new Conference())
-            ->setName($name)
-            ->setDescription('Some generic description')
-            ->setAccessible(true)
-            ->setStartAt((new \DateTimeImmutable($start))->setTime(0, 0, 0))
-            ->setEndAt((new \DateTimeImmutable($end))->setTime(23, 59, 59))
-        ;
+        $conference = new Conference();
+        $form = $this->createForm(ConferenceType::class, $conference);
 
-        $manager->persist($conference);
-        $manager->flush();
-
-        return new Response('Conference created');
+        return $this->render('conference/new.html.twig', [
+            'form' => $form,
+        ]);
     }
 }
