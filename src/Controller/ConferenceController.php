@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Conference;
 use App\Form\ConferenceType;
 use App\Search\ConferenceSearchInterface;
+use App\Search\Database\DatabaseConferenceSearch;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class ConferenceController extends AbstractController
 {
     #[Route('', name: 'app_conference_list', methods: ['GET'])]
-    public function list(Request $request, ConferenceSearchInterface $search): Response
+    public function list(Request $request, #[Autowire(service: DatabaseConferenceSearch::class)] ConferenceSearchInterface $search): Response
     {
         $page = $request->query->get('page');
         $name = $request->query->get('name');

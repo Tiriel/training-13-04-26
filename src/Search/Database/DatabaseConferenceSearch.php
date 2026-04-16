@@ -4,10 +4,8 @@ namespace App\Search\Database;
 
 use App\Repository\ConferenceRepository;
 use App\Search\ConferenceSearchInterface;
-use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-#[AsAlias]
 readonly class DatabaseConferenceSearch implements ConferenceSearchInterface
 {
     public function __construct(
