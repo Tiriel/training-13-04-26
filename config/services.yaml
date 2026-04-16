@@ -25,5 +25,4 @@ services:
 
     App\Search\Database\DatabaseConferenceSearch:
         arguments:
-            $repository: '@App\Repository\ConferenceRepository'
             $limit: '%app.conference_limit%'
