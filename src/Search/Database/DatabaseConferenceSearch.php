@@ -3,12 +3,13 @@
 namespace App\Search\Database;
 
 use App\Repository\ConferenceRepository;
+use App\Search\ConferenceSearchInterface;
 
-class DatabaseConferenceSearch
+readonly class DatabaseConferenceSearch implements ConferenceSearchInterface
 {
     public function __construct(
-        private readonly ConferenceRepository $repository,
-        private readonly int $limit,
+        private ConferenceRepository $repository,
+        private int $limit,
     ) {}
 
     public function searchByName(?string $name = null, ?int $page = null): array
