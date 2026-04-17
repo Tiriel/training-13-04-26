@@ -10,7 +10,7 @@ use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 #[When('prod')]
-#[When('dev')]
+//#[When('dev')]
 #[AsDecorator(ConferenceSearchInterface::class, priority: 10)]
 readonly class CacheableConferenceSearch implements ConferenceSearchInterface
 {

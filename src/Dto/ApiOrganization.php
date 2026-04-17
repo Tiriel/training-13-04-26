@@ -11,7 +11,6 @@ class ApiOrganization
         private ?string $name = null,
         private ?string $presentation = null,
         private ?\DateTimeImmutable $createdAt = null,
-        private array $conferences,
     ) {}
 
     public function getName(): ?string
@@ -50,29 +49,11 @@ class ApiOrganization
         return $this;
     }
 
-    public function getConferences(): array
-    {
-        return $this->conferences;
-    }
-
-    public function setConferences(array $conferences): ApiOrganization
-    {
-        $this->conferences = $conferences;
-
-        return $this;
-    }
-
     public function toEntity(): Organization
     {
-        $organization = (new Organization())
+        return (new Organization())
             ->setName($this->name)
             ->setPresentation($this->presentation)
             ->setCreatedAt($this->createdAt);
-
-        foreach ($this->conferences as $conference) {
-            $organization->addConference($conference);
-        }
-
-        return $organization;
     }
 }

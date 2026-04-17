@@ -34,7 +34,7 @@ class ConferenceController extends AbstractController
         $page = $request->query->get('page');
         $name = $request->query->get('name');
 
-        return $this->render('conference/search.html.twig', [
+        return $this->render('conference/list.html.twig', [
             'conferences' => $search->searchByName($name, $page)
         ]);
     }
