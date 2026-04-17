@@ -7,14 +7,27 @@ use App\Entity\Conference;
 use App\Repository\ConferenceRepository;
 use App\Repository\OrganizationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Contracts\Service\Attribute\Required;
 
-readonly class ApiConferencePersister
+class ApiConferencePersister
 {
+    private bool $isOrganizerOrWebsite;
+
     public function __construct(
-        private ConferenceRepository $conferenceRepository,
-        private OrganizationRepository $organizationRepository,
-        private EntityManagerInterface $manager,
-    ) {}
+        private readonly ConferenceRepository $conferenceRepository,
+        private readonly OrganizationRepository $organizationRepository,
+        private readonly EntityManagerInterface $manager,
+    ) {
+    }
+
+    #[Required]
+    public function setIsOrganizerOrWebsite(Security $security): void
+    {
+        $this->isOrganizerOrWebsite =
+            $security->isGranted('ROLE_ORGANIZER')
+            || $security->isGranted('ROLE_WEBSITE');
+    }
 
     public function findOrPersist(ApiConference $dto): Conference
     {
@@ -28,8 +41,7 @@ readonly class ApiConferencePersister
 
         if (null === $conference) {
             $conference = $dto->toEntity();
-            $this->manager->persist($conference);
-            $this->manager->flush();
+            $this->persistForAdmins($conference, true);
         }
 
         return $conference;
@@ -49,17 +61,28 @@ readonly class ApiConferencePersister
 
             if (null === $organization) {
                 $organization = $dtoOrganization->toEntity();
-                $this->manager->persist($organization);
+                $this->persistForAdmins($organization);
                 $persistedOrgs = true;
             }
 
             $organizations[$key] = $organization;
         }
 
-        if ($persistedOrgs) {
+        if ($persistedOrgs && $this->isOrganizerOrWebsite) {
             $this->manager->flush();
         }
 
         return $organizations;
+    }
+
+    private function persistForAdmins(object $entity, bool $flush = false): void
+    {
+        if ($this->isOrganizerOrWebsite) {
+            $this->manager->persist($entity);
+
+            if ($flush) {
+                $this->manager->flush();
+            }
+        }
     }
 }
