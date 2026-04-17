@@ -21,25 +21,12 @@ class ApiConferencePersister
         private readonly ConferenceRepository $conferenceRepository,
         private readonly OrganizationRepository $organizationRepository,
         private readonly EntityManagerInterface $manager,
+        Security $security,
     ) {
-    }
-
-    #[Required]
-    public function setIsOrganizerOrWebsite(Security $security): void
-    {
         $this->isOrganizerOrWebsite =
             $security->isGranted('ROLE_ORGANIZER')
             || $security->isGranted('ROLE_WEBSITE');
-    }
-
-    #[Required]
-    public function setUser(Security $security): void
-    {
-        $user = $security->getUser();
-
-        if ($user instanceof User) {
-            $this->user = $user;
-        }
+        $this->user = $security->getUser();
     }
 
     public function findOrPersist(ApiConference $dto): Conference
