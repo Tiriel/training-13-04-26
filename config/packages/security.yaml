@@ -19,6 +19,15 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
+        app_backdoor_user:
+            memory:
+                users:
+                    admin@admin.com:
+                        password: '%env(ADMIN_PWD)%'
+                        roles: ['ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH']
+        app_all_users:
+            chain:
+                providers: [app_user_provider, app_backdoor_user]
 
     firewalls:
         dev:
@@ -27,7 +36,8 @@ security:
             security: false
         main:
             lazy: true
-            provider: app_user_provider
+            provider: app_all_users
+            switch_user: []
             form_login:
                 login_path: app_login
                 check_path: app_login
